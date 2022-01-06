@@ -57,9 +57,9 @@ const Slide = ({
           <Poster path={posterPath} />
           <Column>
             <Title isDark={isDark}>{movieTitle}</Title>
-            {voteAverage > 0 && (
-              <Votes isDark={isDark}>⭐️ {voteAverage} / 10</Votes>
-            )}
+            <Votes isDark={isDark}>
+              {voteAverage > 0 ? `⭐️ ${voteAverage} / 10` : "Coming soon..."}
+            </Votes>
             <OverView isDark={isDark}>{overview.slice(0, 90)}...</OverView>
           </Column>
         </Wrapper>
