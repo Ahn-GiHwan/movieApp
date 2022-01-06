@@ -1,14 +1,14 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import One from "../screens/One";
+import Two from "../screens/Two";
 
 const NativeStack = createNativeStackNavigator();
 
 const Stack = () => {
   return (
     <NativeStack.Navigator>
-      {/* <Stack.Screen name="Home" component={Home} />
-      <Stack.Screen name="Notifications" component={Notifications} />
-      <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="Settings" component={Settings} /> */}
+      <NativeStack.Screen name="One" component={One} />
+      <NativeStack.Screen name="Two" component={Two} />
     </NativeStack.Navigator>
   );
 };
