@@ -29,12 +29,20 @@ const TrendingScroll = styled.FlatList`
   margin-top: 20px;
 `;
 
+const VSeparator = styled.View`
+  width: 20px;
+`;
+
 const ListContainer = styled.View`
   margin-bottom: 30px;
 `;
 
 const ComingSoonTitle = styled(ListTitle)`
   margin-bottom: 30px;
+`;
+
+const HSeparator = styled.View`
+  height: 20px;
 `;
 
 const API_KEY = "a721dd910292becd0d78ed436463db21";
@@ -90,6 +98,27 @@ const Movies = () => {
     setRefreshing(false);
   };
 
+  const renderVMedia = ({ item }) => {
+    return (
+      <VMedia
+        posterPath={item.poster_path}
+        title={item.title}
+        voteAverage={item.vote_average}
+      />
+    );
+  };
+
+  const renderHMedia = ({ item }) => (
+    <HMedia
+      posterPath={item.poster_path}
+      title={item.title}
+      overview={item.overview}
+      releaseDate={item.release_date}
+    />
+  );
+
+  const movieKeyExtractor = (item) => String(item.id);
+
   return isLoading ? (
     <Loader>
       <ActivityIndicator size="large" />
@@ -127,35 +156,20 @@ const Movies = () => {
             <TrendingScroll
               data={trending}
               horizontal
-              keyExtractor={(item) => String(item.id)}
+              keyExtractor={movieKeyExtractor}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: 20 }}
-              ItemSeparatorComponent={() => <View style={{ width: 20 }}></View>}
-              renderItem={({ item }) => {
-                return (
-                  <VMedia
-                    posterPath={item.poster_path}
-                    title={item.title}
-                    voteAverage={item.vote_average}
-                  />
-                );
-              }}
+              ItemSeparatorComponent={VSeparator}
+              renderItem={renderVMedia}
             ></TrendingScroll>
           </ListContainer>
           <ComingSoonTitle>Coming soon</ComingSoonTitle>
         </>
       }
       data={upcoming}
-      keyExtractor={(item) => String(item.id)}
-      ItemSeparatorComponent={() => <View style={{ height: 20 }}></View>}
-      renderItem={({ item }) => (
-        <HMedia
-          posterPath={item.poster_path}
-          title={item.title}
-          overview={item.overview}
-          releaseDate={item.release_date}
-        />
-      )}
+      keyExtractor={movieKeyExtractor}
+      ItemSeparatorComponent={HSeparator}
+      renderItem={renderHMedia}
     />
   );
 };
