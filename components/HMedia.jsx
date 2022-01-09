@@ -3,8 +3,7 @@ import styled from "styled-components";
 import Poster from "./Poster";
 
 const HMovie = styled.View`
-  margin-bottom: 30px;
-  padding: 0px 30px;
+  padding: 0px 20px;
   flex-direction: row;
 `;
 
