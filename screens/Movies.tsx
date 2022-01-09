@@ -6,7 +6,7 @@ import Slide from "../components/Slide";
 import HMedia from "../components/HMedia";
 import VMedia from "../components/VMedia";
 import { useQuery, useQueryClient } from "react-query";
-import { moivesApi } from "../api";
+import { moivesApi, Movie, MovieResponse } from "../api";
 
 const { height: SCREEN_HEIGTH } = Dimensions.get("window");
 
@@ -53,17 +53,17 @@ const Movies = () => {
     isLoading: nowPlayingLoading,
     data: nowPlayingData,
     isRefetching: nowPlayingIsRefetching,
-  } = useQuery(["movies", "nowPlaying"], moivesApi.nowPlaying);
+  } = useQuery<MovieResponse>(["movies", "nowPlaying"], moivesApi.nowPlaying);
   const {
     isLoading: trendingLoading,
     data: trendingData,
     isRefetching: trendingIsRefetching,
-  } = useQuery(["movies", "trending"], moivesApi.trending);
+  } = useQuery<MovieResponse>(["movies", "trending"], moivesApi.trending);
   const {
     isLoading: upcomingLoading,
     data: upcomingData,
     isRefetching: upcomingIsRefetching,
-  } = useQuery(["movies", "upcoming"], moivesApi.upcoming);
+  } = useQuery<MovieResponse>(["movies", "upcoming"], moivesApi.upcoming);
 
   const onRefresh = () => {
     queryClient.refetchQueries(["movies"]);
@@ -88,7 +88,7 @@ const Movies = () => {
     />
   );
 
-  const movieKeyExtractor = (item) => String(item.id);
+  const movieKeyExtractor = (item:Movie) => String(item.id);
 
   const loading = nowPlayingLoading || trendingLoading || upcomingLoading;
 
@@ -116,7 +116,7 @@ const Movies = () => {
               marginBottom: 30,
             }}
           >
-            {nowPlayingData.results.map((movie) => (
+            {nowPlayingData?.results.map((movie) => (
               <Slide
                 key={movie.id}
                 backdropPath={movie.backdrop_path}
@@ -130,19 +130,19 @@ const Movies = () => {
           <ListContainer>
             <ListTitle>Trending Movies</ListTitle>
             <TrendingScroll
-              data={trendingData.results}
+              data={trendingData?.results}
               horizontal
               keyExtractor={movieKeyExtractor}
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={{ paddingHorizontal: 20 }}
               ItemSeparatorComponent={VSeparator}
               renderItem={renderVMedia}
-            ></TrendingScroll>
+            />
           </ListContainer>
           <ComingSoonTitle>Coming soon</ComingSoonTitle>
         </>
       }
-      data={upcomingData.results}
+      data={upcomingData?.results}
       keyExtractor={movieKeyExtractor}
       ItemSeparatorComponent={HSeparator}
       renderItem={renderHMedia}
