@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import Swiper from "react-native-swiper";
-import { ActivityIndicator, Dimensions } from "react-native";
+import { ActivityIndicator, Dimensions, RefreshControl } from "react-native";
 import Slide from "../components/Slide";
-import Poster from "../components/Poster";
+import HMedia from "../components/HMedia";
+import VMedia from "../components/VMedia";
 
 const { height: SCREEN_HEIGTH } = Dimensions.get("window");
 
@@ -28,51 +29,12 @@ const TrendingScroll = styled.ScrollView`
   margin-top: 20px;
 `;
 
-const Movie = styled.View`
-  align-items: center;
-  margin-right: 20px;
-`;
-
-const Title = styled.Text`
-  color: ${(props) => props.theme.textColor};
-  font-weight: 600;
-  margin-top: 7px;
-  margin-bottom: 5px;
-`;
-
-const Votes = styled.Text`
-  color: ${(props) => props.theme.textColor};
-  font-size: 10px;
-`;
-
 const ListContainer = styled.View`
   margin-bottom: 30px;
 `;
 
 const ComingSoonTitle = styled(ListTitle)`
   margin-bottom: 30px;
-`;
-
-const HMovie = styled.View`
-  margin-bottom: 30px;
-  padding: 0px 30px;
-  flex-direction: row;
-`;
-
-const HColumn = styled.View`
-  width: 80%;
-  margin-left: 15px;
-`;
-
-const Release = styled.Text`
-  margin-vertical: 10px;
-  font-size: 12px;
-  color: ${(props) => props.theme.textColor};
-`;
-
-const Overview = styled.Text`
-  width: 80%;
-  color: ${(props) => props.theme.textColor};
 `;
 
 const API_KEY = "a721dd910292becd0d78ed436463db21";
@@ -82,6 +44,7 @@ const Movies = () => {
   const [nowPlaying, setNowPlaying] = useState([]);
   const [upcoming, setUpcoming] = useState([]);
   const [trending, setTrending] = useState([]);
+  const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
     getData();
@@ -121,12 +84,22 @@ const Movies = () => {
     setTrending(results);
   };
 
+  const onRefresh = async () => {
+    setRefreshing(true);
+    await getData();
+    setRefreshing(false);
+  };
+
   return isLoading ? (
     <Loader>
       <ActivityIndicator size="large" />
     </Loader>
   ) : (
-    <Container>
+    <Container
+      refreshControl={
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+      }
+    >
       <Swiper
         loop={true}
         autoplay={true}
@@ -157,41 +130,24 @@ const Movies = () => {
           contentContainerStyle={{ paddingLeft: 20 }}
         >
           {trending.map(({ id, poster_path, title, vote_average }) => (
-            <Movie key={id}>
-              <Poster path={poster_path} />
-              <Title>
-                {title.slice(0, 13)}
-                {title.length > 13 && "..."}
-              </Title>
-              <Votes>
-                {vote_average > 0
-                  ? `⭐️ ${vote_average} / 10`
-                  : "Coming soon..."}
-              </Votes>
-            </Movie>
+            <VMedia
+              key={id}
+              posterPath={poster_path}
+              title={title}
+              voteAverage={vote_average}
+            />
           ))}
         </TrendingScroll>
       </ListContainer>
       <ComingSoonTitle>Coming soon</ComingSoonTitle>
       {upcoming.map(({ id, poster_path, title, overview, release_date }) => (
-        <HMovie key={id}>
-          <Poster path={poster_path} />
-          <HColumn>
-            <Title>{title}</Title>
-            <Release>
-              {new Date(release_date).toLocaleDateString("ko", {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-              })}
-            </Release>
-            <Overview>
-              {overview === "" || overview.length > 130
-                ? `${overview.slice(0, 130)}...`
-                : overview}
-            </Overview>
-          </HColumn>
-        </HMovie>
+        <HMedia
+          key={id}
+          posterPath={poster_path}
+          title={title}
+          overview={overview}
+          releaseDate={release_date}
+        />
       ))}
     </Container>
   );
