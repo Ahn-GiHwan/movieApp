@@ -4,6 +4,7 @@ import styled from "styled-components/native";
 import { makeImgPath } from "../utils";
 import { BlurView } from "@react-native-community/blur";
 import Poster from "./Poster";
+import Votes from "./Votes";
 
 const BgImg = styled.Image``;
 
@@ -30,9 +31,9 @@ const OverView = styled.Text`
   color: ${(props) => (props.isDark ? "#dfdbdb" : "black")};
 `;
 
-const Votes = styled(OverView)`
-  font-size: 12px;
-`;
+// const Votes = styled(OverView)`
+//   font-size: 12px;
+// `;
 
 const Slide = ({
   backdropPath,
@@ -57,9 +58,7 @@ const Slide = ({
           <Poster path={posterPath} />
           <Column>
             <Title isDark={isDark}>{movieTitle}</Title>
-            <Votes isDark={isDark}>
-              {voteAverage > 0 ? `⭐️ ${voteAverage} / 10` : "Coming soon..."}
-            </Votes>
+            <Votes voteAverage={voteAverage} />
             <OverView isDark={isDark}>{overview.slice(0, 90)}...</OverView>
           </Column>
         </Wrapper>
