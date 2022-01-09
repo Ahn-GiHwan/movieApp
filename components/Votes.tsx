@@ -1,5 +1,5 @@
 import React from "react";
-import styled from "styled-components";
+import styled from "styled-components/native";
 
 const VoteText = styled.Text`
   margin-top: 5px;
