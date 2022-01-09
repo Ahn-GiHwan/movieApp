@@ -1,7 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import Swiper from "react-native-swiper";
-import { ActivityIndicator, Dimensions, RefreshControl } from "react-native";
+import {
+  ActivityIndicator,
+  Dimensions,
+  RefreshControl,
+  View,
+} from "react-native";
 import Slide from "../components/Slide";
 import HMedia from "../components/HMedia";
 import VMedia from "../components/VMedia";
@@ -25,7 +30,7 @@ const ListTitle = styled.Text`
   font-weight: 600;
 `;
 
-const TrendingScroll = styled.ScrollView`
+const TrendingScroll = styled.FlatList`
   margin-top: 20px;
 `;
 
@@ -125,19 +130,22 @@ const Movies = () => {
       <ListContainer>
         <ListTitle>Trending Movies</ListTitle>
         <TrendingScroll
+          data={trending}
           horizontal
+          keyExtractor={(item) => String(item.id)}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{ paddingLeft: 20 }}
-        >
-          {trending.map(({ id, poster_path, title, vote_average }) => (
-            <VMedia
-              key={id}
-              posterPath={poster_path}
-              title={title}
-              voteAverage={vote_average}
-            />
-          ))}
-        </TrendingScroll>
+          contentContainerStyle={{ paddingHorizontal: 20 }}
+          ItemSeparatorComponent={() => <View style={{ width: 20 }}></View>}
+          renderItem={({ item }) => {
+            return (
+              <VMedia
+                posterPath={item.poster_path}
+                title={item.title}
+                voteAverage={item.vote_average}
+              />
+            );
+          }}
+        ></TrendingScroll>
       </ListContainer>
       <ComingSoonTitle>Coming soon</ComingSoonTitle>
       {upcoming.map(({ id, poster_path, title, overview, release_date }) => (
