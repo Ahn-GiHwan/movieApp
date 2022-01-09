@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, useColorScheme, View } from "react-native";
 import styled from "styled-components/native";
 import { makeImgPath } from "../utils";
-import { BlurView } from "@react-native-community/blur";
+import { BlurView } from "expo-blur";
 import Poster from "./Poster";
 import Votes from "./Votes";
 
