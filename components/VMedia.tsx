@@ -3,6 +3,12 @@ import styled from "styled-components/native";
 import Poster from "./Poster";
 import Votes from "./Votes";
 
+interface VMediaPorps {
+  posterPath: string,
+  title: string,
+  voteAverage: number
+}
+
 const Movie = styled.View`
   align-items: center;
 `;
@@ -13,7 +19,7 @@ const Title = styled.Text`
   margin-top: 7px;
 `;
 
-const VMedia = ({ posterPath, title, voteAverage }) => {
+const VMedia: React.FC<VMediaPorps> = ({ posterPath, title, voteAverage }) => {
   return (
     <Movie>
       <Poster path={posterPath} />

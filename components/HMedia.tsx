@@ -2,6 +2,13 @@ import React from "react";
 import styled from "styled-components/native";
 import Poster from "./Poster";
 
+interface HMediaProps {
+  posterPath:string,
+   title:string,
+   overview:string,
+   releaseDate:string
+}
+
 const HMovie = styled.View`
   padding: 0px 20px;
   flex-direction: row;
@@ -29,7 +36,7 @@ const Overview = styled.Text`
   color: ${(props) => props.theme.textColor};
 `;
 
-const HMedia = ({ posterPath, title, overview, releaseDate }) => {
+const HMedia: React.FC<HMediaProps> = ({ posterPath, title, overview, releaseDate }) => {
   return (
     <HMovie>
       <Poster path={posterPath} />
