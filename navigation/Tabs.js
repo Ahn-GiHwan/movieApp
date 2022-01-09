@@ -12,7 +12,6 @@ const Tabs = () => {
   return (
     <Tab.Navigator
       screenOptions={{
-        unmountOnBlur: true,
         headerStyle: {
           backgroundColor: isDark ? "pink" : "skyblue",
         },
