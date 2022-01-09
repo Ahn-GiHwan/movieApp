@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import styled from "styled-components/native";
 import Swiper from "react-native-swiper";
-import { ActivityIndicator, Dimensions, View } from "react-native";
+import { ActivityIndicator, Dimensions, FlatList } from "react-native";
 import Slide from "../components/Slide";
 import HMedia from "../components/HMedia";
 import VMedia from "../components/VMedia";
@@ -18,7 +18,8 @@ const Loader = styled.View`
 
 const Container = styled.FlatList`
   background-color: ${(props) => props.theme.mainBgColor};
-`;
+`as unknown as typeof FlatList;
+
 
 const ListTitle = styled.Text`
   margin-left: 20px;
@@ -29,7 +30,7 @@ const ListTitle = styled.Text`
 
 const TrendingScroll = styled.FlatList`
   margin-top: 20px;
-`;
+`as unknown as typeof FlatList;
 
 const VSeparator = styled.View`
   width: 20px;
