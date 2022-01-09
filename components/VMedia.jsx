@@ -5,7 +5,6 @@ import Votes from "./Votes";
 
 const Movie = styled.View`
   align-items: center;
-  margin-right: 20px;
 `;
 
 const Title = styled.Text`
@@ -19,8 +18,8 @@ const VMedia = ({ posterPath, title, voteAverage }) => {
     <Movie>
       <Poster path={posterPath} />
       <Title>
-        {title.slice(0, 13)}
-        {title.length > 13 && "..."}
+        {title.slice(0, 8)}
+        {title.length > 8 && "..."}
       </Title>
       <Votes voteAverage={voteAverage} />
     </Movie>
