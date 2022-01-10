@@ -61,7 +61,6 @@ const trendingTv = () =>
   ).then((res) => res.json());
 
 // searchApi
-
 const movies = ({ queryKey }) => {
   const query = queryKey[1];
   return fetch(
@@ -76,6 +75,21 @@ const tvs = ({ queryKey }) => {
   ).then((res) => res.json());
 };
 
+// detailApi
+const movieDetail = ({ queryKey }) => {
+  const id = queryKey[1];
+  return fetch(
+    `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=ko&include_adult=false&region=KR&append_to_response=videos,images`
+  ).then((res) => res.json());
+};
+
+const tvDetail = ({ queryKey }) => {
+  const id = queryKey[1];
+  return fetch(
+    `${BASE_URL}/tv/${id}?api_key=${API_KEY}&language=ko&include_adult=false&region=KR&append_to_response=videos,images`
+  ).then((res) => res.json());
+};
+
 export const moivesApi = { nowPlaying, upcoming, trending: trendingMovie };
 export const tvApi = {
   airingToday,
@@ -83,3 +97,4 @@ export const tvApi = {
   trending: trendingTv,
 };
 export const searchApi = { movies, tvs };
+export const detailApi = { movieDetail, tvDetail };
