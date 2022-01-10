@@ -60,9 +60,26 @@ const trendingTv = () =>
     `${BASE_URL}/trending/tv/week?api_key=${API_KEY}&language=ko&page=1&region=KR`
   ).then((res) => res.json());
 
+// searchApi
+
+const movies = ({ queryKey }) => {
+  const query = queryKey[1];
+  return fetch(
+    `${BASE_URL}/search/movie?api_key=${API_KEY}&language=ko&query=${query}&include_adult=false&region=KR`
+  ).then((res) => res.json());
+};
+
+const tvs = ({ queryKey }) => {
+  const query = queryKey[1];
+  return fetch(
+    `${BASE_URL}/search/tv?api_key=${API_KEY}&language=ko&query=${query}&include_adult=false&region=KR`
+  ).then((res) => res.json());
+};
+
 export const moivesApi = { nowPlaying, upcoming, trending: trendingMovie };
 export const tvApi = {
   airingToday,
   topRated,
   trending: trendingTv,
 };
+export const searchApi = { movies, tvs };
