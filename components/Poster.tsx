@@ -24,7 +24,7 @@ const AltText = styled.Text`
   font-weight: 700;
 `;
 
-const Poster = ({ path }) => {
+const Poster = ({ path }: any) => {
   if (path) return <Image source={{ uri: makeImgPath(path) }} />;
   else {
     return (

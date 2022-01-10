@@ -50,7 +50,7 @@ const Movies = () => {
     setRefreshing(false);
   };
 
-  const renderHMedia = ({ item }) => (
+  const renderHMedia = ({ item }: any) => (
     <HMedia
       posterPath={item.poster_path}
       title={item.title}
