@@ -1,10 +1,14 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect } from "react";
-import { Dimensions, StyleSheet, Text, View } from "react-native";
+import { Dimensions, StyleSheet, Linking } from "react-native";
 import styled from "styled-components/native";
 import Poster from "../components/Poster";
 import { makeImgPath } from "../utils";
 import { LinearGradient } from "expo-linear-gradient";
+import { useQuery } from "react-query";
+import { detailApi } from "../api";
+import Loader from "../components/Loader";
+import { Ionicons } from "@expo/vector-icons";
 
 const { height: SCREEN_HEIGTH } = Dimensions.get("window");
 
@@ -33,14 +37,30 @@ const Title = styled.Text`
   font-weight: 500;
 `;
 
+const Data = styled.View`
+  padding: 0 20px;
+`;
+
 const Overview = styled.Text`
   color: ${(props) => props.theme.textColor};
-  margin-top: 20px;
-  padding: 0 20px;
+  margin: 20px 0;
+`;
+
+const VideoBtn = styled.TouchableOpacity`
+  flex-direction: row;
+`;
+
+const BtnText = styled.Text`
+  color: ${(props) => props.theme.textColor};
+  font-weight: 600;
+  margin-bottom: 10px;
+  line-height: 24px;
+  margin-left: 10px;
 `;
 
 type RootStackParamList = {
   Detail: {
+    id: string;
     title: string;
     name: string;
     poster_path: string;
@@ -55,11 +75,23 @@ const Detail: React.FC<DetailScreenProps> = ({
   navigation: { setOptions },
   route: { params },
 }) => {
+  const isMovie = params.title ? true : false;
+
+  const { isLoading, data } = useQuery(
+    [isMovie ? "movies" : "tv", params.id],
+    isMovie ? detailApi.movieDetail : detailApi.tvDetail
+  );
+
   useEffect(() => {
     setOptions({
       title: params.title ? "Movie" : "TV Show",
     });
   }, []);
+
+  const openYTLink = async (videoId: string) => {
+    const baseUrl = `https://m.youtube.com/watch?v=${videoId}`;
+    await Linking.openURL(baseUrl);
+  };
 
   return (
     <Container>
@@ -77,7 +109,16 @@ const Detail: React.FC<DetailScreenProps> = ({
           <Title>{params.title || params.name}</Title>
         </Column>
       </Header>
-      <Overview>{params.overview}</Overview>
+      <Data>
+        <Overview>{params.overview}</Overview>
+        {isLoading && <Loader />}
+        {data?.videos?.results?.map((video: any) => (
+          <VideoBtn key={video.key} onPress={() => openYTLink(video.key)}>
+            <Ionicons name="logo-youtube" size={24} color={"red"} />
+            <BtnText>{video.name}</BtnText>
+          </VideoBtn>
+        ))}
+      </Data>
     </Container>
   );
 };
