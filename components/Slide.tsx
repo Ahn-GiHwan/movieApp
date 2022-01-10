@@ -1,10 +1,16 @@
 import React from "react";
-import { StyleSheet, useColorScheme, View } from "react-native";
+import {
+  StyleSheet,
+  TouchableWithoutFeedback,
+  useColorScheme,
+  View,
+} from "react-native";
 import styled from "styled-components/native";
 import { makeImgPath } from "../utils";
 import { BlurView } from "expo-blur";
 import Poster from "./Poster";
 import Votes from "./Votes";
+import { useNavigation } from "@react-navigation/native";
 
 const BgImg = styled.Image``;
 
@@ -31,39 +37,57 @@ const OverView = styled.Text`
   color: ${(props) => (props.isDark ? "#dfdbdb" : "black")};
 `;
 
-// const Votes = styled(OverView)`
-//   font-size: 12px;
-// `;
+interface SlideProps {
+  backdropPath: string | null;
+  posterPath: string | null;
+  movieTitle: string;
+  voteAverage: number;
+  overview: string;
+  fullData: any;
+}
 
-const Slide = ({
+const Slide: React.FC<SlideProps> = ({
   backdropPath,
   posterPath,
   movieTitle,
   voteAverage,
   overview,
+  fullData,
 }) => {
   const isDark = useColorScheme() === "dark";
+  const navigation = useNavigation();
+
+  const goToDeatil = () => {
+    navigation.navigate("Stack", {
+      screen: "Detail",
+      params: {
+        ...fullData,
+      },
+    });
+  };
   return (
-    <View style={{ flex: 1 }}>
-      <BgImg
-        style={StyleSheet.absoluteFill}
-        source={{ uri: makeImgPath(backdropPath) }}
-      />
-      <BlurView
-        style={StyleSheet.absoluteFill}
-        blurType={isDark ? "dark" : "light"}
-        blurAmount={10}
-      >
-        <Wrapper>
-          <Poster path={posterPath} />
-          <Column>
-            <Title isDark={isDark}>{movieTitle}</Title>
-            <Votes voteAverage={voteAverage} />
-            <OverView isDark={isDark}>{overview.slice(0, 90)}...</OverView>
-          </Column>
-        </Wrapper>
-      </BlurView>
-    </View>
+    <TouchableWithoutFeedback onPress={goToDeatil}>
+      <View style={{ flex: 1 }}>
+        <BgImg
+          style={StyleSheet.absoluteFill}
+          source={{ uri: makeImgPath(backdropPath) }}
+        />
+        <BlurView
+          style={StyleSheet.absoluteFill}
+          blurType={isDark ? "dark" : "light"}
+          blurAmount={10}
+        >
+          <Wrapper>
+            <Poster path={posterPath} />
+            <Column>
+              <Title isDark={isDark}>{movieTitle}</Title>
+              <Votes voteAverage={voteAverage} />
+              <OverView isDark={isDark}>{overview.slice(0, 90)}...</OverView>
+            </Column>
+          </Wrapper>
+        </BlurView>
+      </View>
+    </TouchableWithoutFeedback>
   );
 };
 
