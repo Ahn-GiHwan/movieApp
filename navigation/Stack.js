@@ -1,7 +1,6 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { Text, useColorScheme, View } from "react-native";
+import { useColorScheme } from "react-native";
 import Detail from "../screens/Detail";
-import { Ionicons } from "@expo/vector-icons";
 
 const NativeStack = createNativeStackNavigator();
 
@@ -15,15 +14,6 @@ const Stack = ({ navigation }) => {
           backgroundColor: isDark ? "pink" : "skyblue",
         },
         headerTintColor: "black",
-        headerLeft: () => (
-          <Ionicons
-            name="arrow-back-outline"
-            size={24}
-            onPress={() => {
-              navigation.goBack();
-            }}
-          />
-        ),
       }}
     >
       <NativeStack.Screen name="Detail" component={Detail} />
