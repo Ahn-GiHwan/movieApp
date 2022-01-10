@@ -95,7 +95,7 @@ const Detail: React.FC<DetailScreenProps> = ({
     const isAndroid = Platform.OS === "android";
     const homepage = isMovie
       ? `https://www.imdb.com/title/${data.imdb_id}`
-      : data.hompage;
+      : data.homepage;
 
     if (isAndroid) {
       await Share.share({
