@@ -1,7 +1,8 @@
 import React, { useMemo } from "react";
-import { FlatList } from "react-native";
+import { FlatList, Text } from "react-native";
 import styled from "styled-components/native";
 import VMedia from "./VMedia";
+import { AntDesign } from "@expo/vector-icons";
 
 interface HListProps {
   title: string;
@@ -20,6 +21,17 @@ const ListTitle = styled.Text`
   color: ${(props) => props.theme.textColor};
 `;
 
+const EmptyResults = styled.View`
+  flex: 1;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 20px;
+`;
+
+const EmptyText = styled.Text`
+  color: ${(props) => props.theme.textColor};
+`;
+
 export const HListSeparator = styled.View`
   width: 20px;
 `;
@@ -27,21 +39,30 @@ export const HListSeparator = styled.View`
 const HList: React.FC<HListProps> = ({ title, data }) => (
   <ListContainer>
     <ListTitle>{title}</ListTitle>
-    <FlatList
-      data={data}
-      horizontal
-      keyExtractor={(item) => String(item.id)}
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={{ paddingHorizontal: 20 }}
-      ItemSeparatorComponent={HListSeparator}
-      renderItem={({ item }) => (
-        <VMedia
-          posterPath={item.poster_path}
-          title={item.name || item.title}
-          voteAverage={item.vote_average}
-        />
-      )}
-    />
+    {data.length > 0 ? (
+      <FlatList
+        data={data}
+        horizontal
+        keyExtractor={(item) => String(item.id)}
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={{ paddingHorizontal: 20 }}
+        ItemSeparatorComponent={HListSeparator}
+        renderItem={({ item }) => (
+          <VMedia
+            posterPath={item.poster_path}
+            title={item.name || item.title}
+            voteAverage={item.vote_average}
+          />
+        )}
+      />
+    ) : (
+      <EmptyResults>
+        <EmptyText>결과가 없습니다.</EmptyText>
+        <EmptyText>
+          <AntDesign name="closesquare" size={24} />
+        </EmptyText>
+      </EmptyResults>
+    )}
   </ListContainer>
 );
 
