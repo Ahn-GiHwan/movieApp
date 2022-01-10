@@ -52,6 +52,7 @@ const HList: React.FC<HListProps> = ({ title, data }) => (
             posterPath={item.poster_path}
             title={item.name || item.title}
             voteAverage={item.vote_average}
+            fullData={item}
           />
         )}
       />
