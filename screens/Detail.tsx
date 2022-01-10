@@ -1,6 +1,12 @@
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import React, { useEffect } from "react";
-import { Dimensions, StyleSheet, Linking } from "react-native";
+import {
+  Dimensions,
+  StyleSheet,
+  Share,
+  TouchableOpacity,
+  Platform,
+} from "react-native";
 import styled from "styled-components/native";
 import Poster from "../components/Poster";
 import { makeImgPath } from "../utils";
@@ -9,6 +15,7 @@ import { useQuery } from "react-query";
 import { detailApi } from "../api";
 import Loader from "../components/Loader";
 import { Ionicons } from "@expo/vector-icons";
+import * as WebBrowser from "expo-web-browser";
 
 const { height: SCREEN_HEIGTH } = Dimensions.get("window");
 
@@ -66,16 +73,46 @@ type RootStackParamList = {
     poster_path: string;
     backdrop_path: string;
     overview: string;
+    imdb_id: string;
   };
 };
 
 type DetailScreenProps = NativeStackScreenProps<RootStackParamList, "Detail">;
 
 const Detail: React.FC<DetailScreenProps> = ({
-  navigation: { setOptions },
+  navigation: { setOptions, goBack },
   route: { params },
 }) => {
   const isMovie = params.title ? true : false;
+
+  const ShardButton = () => (
+    <TouchableOpacity onPress={shareMedia}>
+      <Ionicons name="share-outline" color="black" size={24} />
+    </TouchableOpacity>
+  );
+
+  const shareMedia = async () => {
+    const isAndroid = Platform.OS === "android";
+    const homepage = isMovie
+      ? `https://www.imdb.com/title/${data.imdb_id}`
+      : data.hompage;
+
+    if (isAndroid) {
+      await Share.share({
+        message: `${params.overview}\nCheck it out: ${homepage}`,
+        title: params.title || params.name,
+      });
+    } else {
+      await Share.share({
+        message: params.overview,
+        url: homepage,
+      });
+    }
+  };
+
+  const BackButton = () => (
+    <Ionicons name="arrow-back-outline" size={24} onPress={goBack} />
+  );
 
   const { isLoading, data } = useQuery(
     [isMovie ? "movies" : "tv", params.id],
@@ -85,12 +122,19 @@ const Detail: React.FC<DetailScreenProps> = ({
   useEffect(() => {
     setOptions({
       title: params.title ? "Movie" : "TV Show",
+      headerLeft: BackButton,
     });
   }, []);
 
+  useEffect(() => {
+    setOptions({
+      headerRight: ShardButton,
+    });
+  }, [data]);
+
   const openYTLink = async (videoId: string) => {
     const baseUrl = `https://m.youtube.com/watch?v=${videoId}`;
-    await Linking.openURL(baseUrl);
+    await WebBrowser.openBrowserAsync(baseUrl);
   };
 
   return (
