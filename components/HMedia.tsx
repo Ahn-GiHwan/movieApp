@@ -1,12 +1,15 @@
+import { useNavigation } from "@react-navigation/native";
 import React from "react";
+import { TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import Poster from "./Poster";
 
 interface HMediaProps {
-  posterPath:string,
-   title:string,
-   overview:string,
-   releaseDate:string
+  posterPath: string;
+  title: string;
+  overview: string;
+  releaseDate: string;
+  fullData: any;
 }
 
 const HMovie = styled.View`
@@ -36,26 +39,43 @@ const Overview = styled.Text`
   color: ${(props) => props.theme.textColor};
 `;
 
-const HMedia: React.FC<HMediaProps> = ({ posterPath, title, overview, releaseDate }) => {
+const HMedia: React.FC<HMediaProps> = ({
+  posterPath,
+  title,
+  overview,
+  releaseDate,
+  fullData,
+}) => {
+  const navigation = useNavigation();
+  const goToDeatil = () => {
+    navigation.navigate("Stack", {
+      screen: "Detail",
+      params: {
+        ...fullData,
+      },
+    });
+  };
   return (
-    <HMovie>
-      <Poster path={posterPath} />
-      <HColumn>
-        <Title>{title}</Title>
-        <Release>
-          {new Date(releaseDate).toLocaleDateString("ko", {
-            year: "numeric",
-            month: "long",
-            day: "numeric",
-          })}
-        </Release>
-        <Overview>
-          {overview === "" || overview.length > 130
-            ? `${overview.slice(0, 130)}...`
-            : overview}
-        </Overview>
-      </HColumn>
-    </HMovie>
+    <TouchableOpacity onPress={goToDeatil}>
+      <HMovie>
+        <Poster path={posterPath} />
+        <HColumn>
+          <Title>{title}</Title>
+          <Release>
+            {new Date(releaseDate).toLocaleDateString("ko", {
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+            })}
+          </Release>
+          <Overview>
+            {overview === "" || overview.length > 130
+              ? `${overview.slice(0, 130)}...`
+              : overview}
+          </Overview>
+        </HColumn>
+      </HMovie>
+    </TouchableOpacity>
   );
 };
 
