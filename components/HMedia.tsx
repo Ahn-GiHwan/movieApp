@@ -69,7 +69,7 @@ const HMedia: React.FC<HMediaProps> = ({
             })}
           </Release>
           <Overview>
-            {overview === "" || overview.length > 130
+            {overview || overview.length > 130
               ? `${overview.slice(0, 130)}...`
               : overview}
           </Overview>
