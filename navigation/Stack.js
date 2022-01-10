@@ -1,14 +1,22 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import One from "../screens/One";
-import Two from "../screens/Two";
+import { useColorScheme } from "react-native";
+import Detail from "../screens/Detail";
 
 const NativeStack = createNativeStackNavigator();
 
 const Stack = () => {
+  const isDark = useColorScheme() === "dark" && true;
   return (
-    <NativeStack.Navigator>
-      <NativeStack.Screen name="One" component={One} />
-      <NativeStack.Screen name="Two" component={Two} />
+    <NativeStack.Navigator
+      screenOptions={{
+        headerBackTitleVisible: false,
+        headerStyle: {
+          backgroundColor: isDark ? "pink" : "skyblue",
+        },
+        headerTintColor: "black",
+      }}
+    >
+      <NativeStack.Screen name="Detail" component={Detail} />
     </NativeStack.Navigator>
   );
 };
