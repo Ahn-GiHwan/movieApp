@@ -1,13 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components/native";
 import Swiper from "react-native-swiper";
-import { Dimensions, FlatList } from "react-native";
+import { Alert, Dimensions, FlatList } from "react-native";
 import Slide from "../components/Slide";
 import HMedia from "../components/HMedia";
-import { useQuery, useQueryClient } from "react-query";
+import { useInfiniteQuery, useQuery, useQueryClient } from "react-query";
 import { moivesApi, Movie, MovieResponse } from "../api";
 import Loader from "../components/Loader";
 import HList from "../components/HList";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
 
 const { height: SCREEN_HEIGTH } = Dimensions.get("window");
 
@@ -30,7 +31,7 @@ const HSeparator = styled.View`
   height: 20px;
 `;
 
-const Movies = () => {
+const Movies: React.FC<NativeStackScreenProps<any, "Movies">> = () => {
   const [refreshing, setRefreshing] = useState(false);
 
   const queryClient = useQueryClient();
@@ -41,8 +42,17 @@ const Movies = () => {
   const { isLoading: trendingLoading, data: trendingData } =
     useQuery<MovieResponse>(["movies", "trending"], moivesApi.trending);
 
-  const { isLoading: upcomingLoading, data: upcomingData } =
-    useQuery<MovieResponse>(["movies", "upcoming"], moivesApi.upcoming);
+  const {
+    isLoading: upcomingLoading,
+    data: upcomingData,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery(["movies", "upcoming"], moivesApi.upcoming, {
+    getNextPageParam: (currentPage) => {
+      const nextPage = currentPage.page + 1;
+      return nextPage > currentPage.total_pages ? null : nextPage;
+    },
+  });
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -64,10 +74,15 @@ const Movies = () => {
 
   const loading = nowPlayingLoading || trendingLoading || upcomingLoading;
 
+  const loadMore = () => {
+    if (hasNextPage) fetchNextPage();
+  };
+
   return loading ? (
     <Loader />
   ) : (
     <Container
+      onEndReached={loadMore}
       onRefresh={onRefresh}
       refreshing={refreshing}
       ListHeaderComponent={
@@ -99,7 +114,7 @@ const Movies = () => {
           <ComingSoonTitle>Coming soon</ComingSoonTitle>
         </>
       }
-      data={upcomingData?.results}
+      data={upcomingData.pages.map((page) => page.results).flat()}
       keyExtractor={movieKeyExtractor}
       ItemSeparatorComponent={HSeparator}
       renderItem={renderHMedia}
