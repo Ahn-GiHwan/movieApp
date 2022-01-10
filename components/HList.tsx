@@ -5,7 +5,7 @@ import VMedia from "./VMedia";
 
 interface HListProps {
   title: string;
-  data: any[];
+  data: any;
 }
 
 const ListContainer = styled.View`
